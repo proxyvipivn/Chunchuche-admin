@@ -3,423 +3,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHUNCHUCHE-ADMIN Dashboard</title>
+    <title>VITA MOD VIP - Tạo Key</title>
     <style>
+        /* Cài đặt chung */
         :root {
-            /* Đổi màu chủ đạo từ xanh nhạt sang Xanh Lá Đậm (Xanh đập) */
-            --primary-green: #2E7D32; 
-            --primary-green-hover: #1B5E20;
-            --bg-overlay: rgba(0, 0, 0, 0.6);
-            --white: #ffffff;
-            --border-color: #e0e0e0;
-            --danger: #d32f2f;
-            --bg-login: #1a1a2e; /* Màu nền tối cho màn login */
+            --primary-green: #198754; /* Màu xanh đậm (đập) */
+            --primary-green-hover: #157347;
+            --bg-color: #f4f6f8;
+            --text-main: #333;
         }
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { margin: 0; background-color: #e9ecef; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        body { margin: 0; background-color: var(--bg-color); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
 
-        /* --- Màn hình đăng nhập --- */
-        #loginScreen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-login); z-index: 9999;
-            display: flex; justify-content: center; align-items: center; flex-direction: column;
+        /* Container chính */
+        .app-container {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
         }
-        .login-box {
-            background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-        .login-box h1 { font-size: 24px; color: #222; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
-        .login-box input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; outline: none; }
-        .login-box button {
-            width: 100%; padding: 12px; margin-top: 15px; background: var(--primary-green); color: white; border: none;
-            border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: bold;
-        }
-        .login-box button:hover { background: var(--primary-green-hover); }
-        .login-error { color: var(--danger); margin-top: 10px; font-size: 14px; display: none; }
 
-        /* --- Giao diện chính --- */
-        #mainScreen {
-            display: none; /* Mặc định ẩn */
-            width: 100%; max-width: 500px; background: var(--white); border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; padding: 24px; margin: 20px;
+        /* Header (Ảnh 1) */
+        .header {
+            padding: 30px 20px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            background: #fff;
         }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; position: relative;}
-        .header h2 { margin: 0; font-size: 18px; color: #333; text-transform: uppercase;}
+        .shield-icon {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #ff6b35; /* Màu cam */
+            border-radius: 12px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff6b35;
+            font-size: 30px;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+        }
+        .header h1 { margin: 0; font-size: 24px; letter-spacing: 1px; font-weight: 700; }
+        .header p { margin: 5px 0 0; color: #888; font-size: 15px; }
+        .title-auth { font-size: 28px; font-weight: 800; margin-top: 10px; }
+
+        /* Form (Ảnh 2) */
+        .form-content {
+            padding: 25px;
+            display: none; /* Ẩn form ban đầu */
+        }
+        .form-content.active { display: block; }
+
+        /* Inputs */
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: var(--text-main); }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+        .input-group input:focus, .input-group select:focus { border-color: var(--primary-green); }
         
-        /* Nút x thông minh */
-        .action-btn-top {
-            background: none; border: none; font-size: 24px; cursor: pointer; color: #666; padding: 0 5px;
-            transition: transform 0.3s;
+        /* Checkboxes List */
+        .instance-list {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
         }
-        .action-btn-top:hover { transform: rotate(90deg); }
-
-        /* Phần hiện ra khi bấm nút X */
-        .dropdown-menu {
-            display: none; position: absolute; right: 0; top: 35px; background: white; border: 1px solid #ddd;
-            border-radius: 8px; width: 220px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10; padding: 10px;
+        .instance-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            border-bottom: 1px solid #f9f9f9;
         }
-        .dropdown-menu.show { display: block; }
-        .dropdown-item {
-            display: flex; justify-content: space-between; padding: 8px 5px; border-bottom: 1px solid #f0f0f0;
-            font-size: 14px; align-items: center;
-        }
-        .dropdown-item:last-child { border-bottom: none; }
-        .status-wifi { color: var(--primary-green); font-size: 18px; } /* Đổi màu xanh đập */
-        .status-cross { color: var(--danger); font-size: 18px; }
-        .info-row { display: flex; justify-content: space-between; font-size: 13px; margin-top: 5px; color: #555; }
-
-        /* Form tạo key */
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; text-transform: uppercase; }
-        .form-control { width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px; }
-        .input-hint { font-size: 12px; color: #888; margin-top: 4px; }
-
-        .section-instances {
-            border: 1px solid var(--border-color); border-radius: 6px; margin-top: 10px; padding: 10px;
-            border-top: 3px solid var(--primary-green); /* Nhấn mạnh */
-        }
-        .instances-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .btn-group { display: flex; gap: 8px; }
-        .btn-sm { padding: 4px 12px; font-size: 12px; border: 1px solid var(--border-color); background: white; border-radius: 4px; cursor: pointer; }
-        .instances-count { color: var(--primary-green); font-weight: 600; font-size: 14px; }
-        
-        .instance-list { list-style: none; padding: 0; margin: 0; }
-        .instance-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
         .instance-item:last-child { border-bottom: none; }
-        .instance-left { display: flex; align-items: center; gap: 8px; }
-        .instance-left input[type="checkbox"] { accent-color: var(--primary-green); width: 18px; height: 18px; cursor: pointer; }
-        .instance-name { font-size: 14px; font-weight: 500; color: #222; }
-
-        .submit-btn {
-            width: 100%; background: var(--primary-green); color: white; border: none; padding: 12px;
-            border-radius: 6px; font-size: 15px; font-weight: 500; margin-top: 15px; cursor: pointer;
-            display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s;
+        .instance-item label { margin-left: 10px; flex: 1; font-weight: normal; cursor: pointer; }
+        .instance-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary-green); /* Màu xanh đập */
+            cursor: pointer;
         }
-        .submit-btn:hover { background: var(--primary-green-hover); }
-        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        
-        /* Lịch sử */
-        .history-section { margin-top: 30px; border-top: 2px solid var(--border-color); padding-top: 20px; }
-        .history-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .history-list { max-height: 300px; overflow-y: auto; border: 1px solid #eee; border-radius: 6px; padding: 10px; }
-        .history-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
-        .delete-btn { background: var(--danger); color: white; border: none; border-radius: 4px; padding: 2px 8px; font-size: 11px; cursor: pointer; }
+        .instance-item span.port {
+            color: #999;
+            font-size: 12px;
+            background: #f1f1f1;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
 
-        /* Modal Loading */
-        #loadingModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-overlay); z-index: 1000; justify-content: center; align-items: center; }
-        .loading-box { background: white; padding: 30px; border-radius: 8px; text-align: center; width: 80%; max-width: 300px; }
-        .loading-spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-green); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        /* Button */
+        .btn-create {
+            width: 100%;
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-create:hover { background: var(--primary-green-hover); }
+        .btn-create:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* Popup & Loading */
+        #loadingOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 999; }
+        #loadingOverlay.active { display: flex; }
+        .loader-box { background: white; padding: 30px 40px; border-radius: 15px; text-align: center; }
+        .spinner { width: 40px; height: 40px; border: 5px solid #eee; border-top: 5px solid var(--primary-green); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .key-result { background: #e8f5e9; padding: 10px; border: 1px solid #a5d6a7; border-radius: 4px; margin-top: 10px; font-family: monospace; word-break: break-all; text-transform: uppercase;}
+
+        /* Màn hình xác thực MK */
+        .auth-screen { padding: 25px; display: block; }
+        .auth-screen.hidden { display: none; }
+
+        /* Phần 2: Admin & Quản trị (Ẩn/Hiện) */
+        .section-admin { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; display: none; }
+        .section-admin.active { display: block; }
+        .nav-tabs { display: flex; border-bottom: 2px solid #eee; margin-bottom: 15px; }
+        .nav-tabs div { flex: 1; text-align: center; padding: 10px; cursor: pointer; font-weight: bold; color: #888; border-bottom: 3px solid transparent; }
+        .nav-tabs div.active { color: var(--primary-green); border-bottom: 3px solid var(--primary-green); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Wifi màu xanh lá đập */
+        .vpn-status.wifi-green { color: var(--primary-green); font-size: 24px; vertical-align: middle; margin-right: 10px; }
+
+        /* Lịch sử key */
+        .history-box { margin-top: 20px; background: #f8f9fa; border-radius: 8px; padding: 10px; max-height: 150px; overflow-y: auto; font-size: 13px; }
+        .history-item { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed #ddd; }
+        .history-item:last-child { border-bottom: none; }
+        .btn-delete-history { color: #dc3545; cursor: pointer; font-size: 12px; border: none; background: none;}
     </style>
 </head>
 <body>
 
-    <!-- Màn hình Đăng nhập -->
-    <div id="loginScreen">
-        <div class="login-box">
-            <h1>CHUNCHUCHE-ADMIN</h1>
-            <p style="color:#666; font-size:14px;">Vui lòng nhập mật khẩu để tiếp tục</p>
-            <input type="password" id="loginPass" placeholder="Nhập mật khẩu..." onkeydown="if(event.key==='Enter') checkLogin()">
-            <button onclick="checkLogin()">ĐĂNG NHẬP</button>
-            <div id="loginError" class="login-error">❌ Sai mật khẩu! Vui lòng thử lại.</div>
+    <!-- Loading Màn hình chờ -->
+    <div id="loadingOverlay">
+        <div class="loader-box">
+            <div class="spinner"></div>
+            <p>Đang tạo Key...</p>
+            <p style="font-size: 12px; color: #888;">Vui lòng chờ từ 1-10 giây</p>
         </div>
     </div>
 
-    <!-- Giao diện Chính -->
-    <div id="mainScreen">
+    <div class="app-container">
+        <!-- Phần Header (Ảnh 1) -->
         <div class="header">
-            <h2>CHUNCHUCHE-ADMIN</h2>
-            <div style="position:relative;">
-                <button class="action-btn-top" onclick="toggleDropdown()">✕</button>
-                
-                <!-- Danh sách hiện ra khi bấm nút X -->
-                <div class="dropdown-menu" id="dropdownMenu">
-                    <div class="dropdown-item">
-                        <span>👤 Admin <br><small style="color:#888;">Trung sang</small></span>
-                        <span style="color:var(--primary-green);">●</span>
-                    </div>
-                    <div class="dropdown-item">
-                        <span>👤 Công huynh</span>
-                        <span style="color:#666;">●</span>
-                    </div>
-                    <div class="dropdown-item" style="border-top:1px dashed #ddd; margin-top:5px; padding-top:10px;">
-                        <span>🛜 Trung sang (đã cấp)</span>
-                        <span class="status-wifi">📶</span>
-                    </div>
-                    <div class="dropdown-item">
-                        <span>🛜 Công huynh (chưa cấp)</span>
-                        <span class="status-cross">❌📶</span>
-                    </div>
-                    <div class="dropdown-item" style="background:#f0fdf4; border-radius:4px; margin-top:5px;">
-                        <span>🛡️ Bảo mật</span>
-                        <span style="color:var(--primary-green); font-size:13px;">Vpn đã cấp an toàn 🛡️</span>
-                    </div>
-                    <div class="info-row" style="margin-top: 8px; padding: 0 5px; flex-direction: column; align-items: flex-start;">
-                        <span style="font-weight:bold;">📦 VPN máy chủ</span>
-                        <span style="font-family:monospace;">1702.18.1.3.186</span>
-                        <span style="font-size:12px;">MK: <span style="font-family:monospace; letter-spacing:2px;">********</span></span>
-                        <span style="font-size:12px; color:#888; margin-top:3px;">VPN chính</span>
-                    </div>
+            <div class="shield-icon">🛡️</div>
+            <h1>VITA MOD VIP</h1>
+            <p>Kích hoạt Key & Quản lý UID</p>
+        </div>
+
+        <!-- Màn hình Nhập MK (Ảnh 1 nửa dưới yêu cầu) -->
+        <div class="auth-screen" id="authScreen">
+            <h3 style="text-align: center; margin-top: 0;">CHUN–CHU–CHE—ADMIN</h3>
+            <div class="input-group">
+                <label>Nhập Mật Khẩu</label>
+                <input type="password" id="passwordInput" placeholder="**********" style="text-align: center; font-size: 20px; letter-spacing: 3px;">
+            </div>
+            <button class="btn-create" onclick="checkPassword()">Xác Nhận</button>
+            <p style="text-align: center; color: red; font-size: 13px; margin-top: 10px; display: none;" id="errorPass">Sai mật khẩu!</p>
+        </div>
+
+        <!-- Form chính (Ảnh 2) -->
+        <div class="form-content" id="mainForm">
+            <h3 style="margin-top: 0;">Tạo Key Mới</h3>
+            
+            <div class="input-group">
+                <label>SỐ LƯỢNG KEY</label>
+                <input type="number" id="slKey" value="10" min="1">
+            </div>
+
+            <div class="input-group">
+                <label>THỜI HẠN (NGÀY)</label>
+                <select id="timeLimit">
+                    <option value="1">1 ngày</option>
+                    <option value="2">2 ngày</option>
+                    <option value="3">3 ngày</option>
+                    <option value="4">4 ngày</option>
+                    <option value="5">5 ngày</option>
+                    <option value="6">6 ngày</option>
+                    <option value="7">7 ngày</option>
+                    <option value="30" selected>30 ngày</option>
+                    <option value="99999">Vĩnh viễn</option>
+                    <option value="custom">Tùy chọn (Nhập số ngày)</option>
+                </select>
+                <input type="number" id="customDays" placeholder="Nhập số ngày..." style="margin-top: 10px; display:none;">
+            </div>
+
+            <div class="input-group">
+                <label>MAX UID/IP MỖI KEY</label>
+                <input type="number" id="maxUID" value="1" min="1" max="10000">
+            </div>
+
+            <div class="input-group">
+                <label>CHỌN INSTANCES CHO KEY *</label>
+                <div class="instance-list" id="instanceList">
+                    <!-- Các instance sẽ được JS tạo ra -->
                 </div>
             </div>
-        </div>
 
-        <!-- Form Tạo Key -->
-        <h3 style="margin-top:0; margin-bottom:15px; text-align:center;">Tạo Key Mới</h3>
+            <button class="btn-create" id="createBtn" onclick="generateKeys()">
+                <span>✔</span> Tạo Key
+            </button>
 
-        <div class="form-group">
-            <label>Số lượng key</label>
-            <input type="number" id="slKey" class="form-control" value="10" min="1">
-        </div>
-
-        <div class="form-group">
-            <label>Thời hạn (Ngày)</label>
-            <select id="timeLimit" class="form-control">
-                <option value="1">1 ngày</option>
-                <option value="7">7 ngày</option>
-                <option value="30" selected>30 ngày</option>
-                <option value="99999">Vĩnh viễn</option>
-            </select>
-            <div class="input-hint">* Thích tạo thời hạn bao nhiêu cũng được</div>
-        </div>
-
-        <div class="form-group">
-            <label>MAX UID/IP MỖI KEY</label>
-            <input type="number" id="maxUID" class="form-control" value="1" min="1" max="10000">
-            <div class="input-hint">Có thể cho từ 1-10000 mỗi UID/IP</div>
-        </div>
-
-        <div class="form-group">
-            <label>Chọn Instances cho key *</label>
-            <div class="section-instances">
-                <div class="instances-header">
-                    <div class="btn-group">
-                        <button class="btn-sm" onclick="selectAll(true)">Chọn tất cả</button>
-                        <button class="btn-sm" onclick="selectAll(false)">Bỏ chọn</button>
-                    </div>
-                    <div class="instances-count" id="instanceCounter">0/12</div>
+            <!-- Phần lịch sử -->
+            <div class="history-box">
+                <strong>Lịch sử Key đã tạo:</strong> 
+                <div id="historyList">
+                    <p style="color: #999; font-size: 12px;">Chưa có key nào được tạo.</p>
                 </div>
-                
-                <ul class="instance-list" id="instanceContainer">
-                    <!-- Javascript sẽ tự tạo nội dung ở đây -->
-                </ul>
             </div>
-            <div class="input-hint" style="margin-top: 5px;">Chọn instances VPN mà key được phép sử dụng</div>
-        </div>
 
-        <button class="submit-btn" id="submitBtn" onclick="generateKeys()">
-            <span>✓</span> Tạo Key
-        </button>
+            <!-- Phần 2: Quản trị (Thêm vào dưới cùng) -->
+            <div class="section-admin" id="adminSection">
+                <div class="nav-tabs">
+                    <div class="active" onclick="switchTab('tab1')">Admin</div>
+                    <div onclick="switchTab('tab2')">Trung Sang</div>
+                    <div onclick="switchTab('tab3')">Công Huynh</div>
+                </div>
 
-        <!-- Lịch sử -->
-        <div class="history-section">
-            <div class="history-header">
-                <h4>Lịch sử Key đã tạo</h4>
-                <button class="btn-sm" onclick="clearHistory()" style="color:#d32f2f; border-color:#d32f2f;">Xoá lịch sử</button>
+                <div id="tab1" class="tab-content active">
+                    <p>Chào mừng Admin.</p>
+                    <div class="vpn-status wifi-green">📶</div>
+                    <strong>VPN máy chủ</strong><br>
+                    <span style="color: #555;">1702.18.1.3.186</span><br>
+                    VPN chính MK: **********
+                </div>
+                <div id="tab2" class="tab-content">
+                    <p>Trung Sang (Đã cấp VPN)</p>
+                </div>
+                <div id="tab3" class="tab-content">
+                    <p>Công Huynh (Chưa cấp VPN)</p>
+                </div>
             </div>
-            <div id="historyList" class="history-list">
-                <!-- Lịch sử sẽ hiện ở đây -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Loading & Result -->
-    <div id="loadingModal">
-        <div class="loading-box">
-            <div class="loading-spinner"></div>
-            <h3 id="loadingText">Đang tạo key...</h3>
-            <div id="keyResultDisplay" class="key-result" style="display:none;"></div>
-            <button id="closeModalBtn" class="submit-btn" style="display:none; margin-top:15px;" onclick="closeModal()">Đóng</button>
         </div>
     </div>
 
     <script>
-        // === 1. LOGIN LOGIC ===
-        const CORRECT_PASSWORD = "UIDIPXCHEAT1743";
-        function checkLogin() {
-            const passInput = document.getElementById('loginPass').value;
-            if(passInput === CORRECT_PASSWORD) {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('mainScreen').style.display = 'block';
+        // 1. Tạo các checkbox yêu cầu
+        const instances = [
+            { name: "AimDrag", port: ":1700" },
+            { name: "AimBodyAntena", port: ":1701" },
+            { name: "Aim Body", port: ":1703" },
+            { name: "Aim neck", port: ":1704" },
+            { name: "Aim neck+antena", port: ":1706" },
+            { name: "holo no aim", port: ":1705" },
+            { name: "AIM DRAG", port: "" },
+            { name: "AIM BODY", port: "" },
+            { name: "AIM NECK", port: "" },
+            { name: "AIM DRAG V2", port: "" },
+            { name: "AIM MAGIC", port: "" },
+            { name: "AIM NECK + MOD", port: "" },
+            { name: "AIM BODY + MOD", port: "" },
+            { name: "XUYÊN GIÁP", port: "" },
+            { name: "AIM BODY + ANTENA", port: "" },
+            { name: "AIM NECK + ANTENA", port: "" },
+            { name: "MOD + ƯỚC ĐƯỢC BAN", port: "" }
+        ];
+
+        const listContainer = document.getElementById('instanceList');
+        instances.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'instance-item';
+            div.innerHTML = `
+                <input type="checkbox" checked>
+                <label>${item.name}</label>
+                <span class="port">${item.port}</span>
+            `;
+            listContainer.appendChild(div);
+        });
+
+        // 2. Logic xác thực mật khẩu
+        function checkPassword() {
+            const pass = document.getElementById('passwordInput').value;
+            if(pass === "UIDIPXCHEAT1743") {
+                document.getElementById('authScreen').classList.add('hidden');
+                document.getElementById('mainForm').classList.add('active');
+                document.getElementById('adminSection').classList.add('active');
+                document.getElementById('errorPass').style.display = 'none';
             } else {
-                document.getElementById('loginError').style.display = 'block';
-                document.getElementById('loginPass').value = '';
-                document.getElementById('loginPass').focus();
+                document.getElementById('errorPass').style.display = 'block';
             }
         }
 
-        // === 2. DROPDOWN (Nút X) ===
-        function toggleDropdown() {
-            const menu = document.getElementById('dropdownMenu');
-            menu.classList.toggle('show');
-        }
-        // Bấm ra ngoài thì đóng menu
-        document.addEventListener('click', function(event) {
-            const menu = document.getElementById('dropdownMenu');
-            const btn = document.querySelector('.action-btn-top');
-            if (!menu.contains(event.target) && !btn.contains(event.target)) {
-                menu.classList.remove('show');
+        // 3. Hiện/ẩn ô nhập ngày tùy chọn
+        document.getElementById('timeLimit').addEventListener('change', function() {
+            const customInput = document.getElementById('customDays');
+            if(this.value === 'custom') {
+                customInput.style.display = 'block';
+            } else {
+                customInput.style.display = 'none';
             }
         });
 
-        // === 3. DANH SÁCH INSTANCES MỚI ===
-        const instancesData = [
-            'AIM DRAG', 'AIM BODY', 'AIM NECK', 'AIM DRAG V2', 
-            'AIM MAGIC', 'AIM NECK + MOD', 'AIM BODY + MOD', 
-            'XUYÊN GIÁP', 'AIM BODY + ANTENA', 'AIM NECK + ANTENA',
-            'MOD + ƯỚC ĐƯỢC BAN'
-        ];
-
-        // Render instances vào giao diện
-        function renderInstances() {
-            const container = document.getElementById('instanceContainer');
-            container.innerHTML = '';
-            instancesData.forEach(name => {
-                const li = document.createElement('li');
-                li.className = 'instance-item';
-                li.innerHTML = `
-                    <div class="instance-left">
-                        <input type="checkbox" class="instance-cb" value="${name}" checked> 
-                        <span class="instance-name">${name}</span>
-                    </div>
-                `;
-                container.appendChild(li);
-            });
-            // Gán sự kiện cho từng checkbox mới
-            document.querySelectorAll('.instance-cb').forEach(cb => {
-                cb.addEventListener('change', updateCounter);
-            });
-            updateCounter();
-        }
-        renderInstances(); // Gọi khi tải trang
-
-        function updateCounter() {
-            const total = document.querySelectorAll('.instance-cb').length;
-            const checked = document.querySelectorAll('.instance-cb:checked').length;
-            document.getElementById('instanceCounter').innerText = `${checked}/${total}`;
-        }
-        function selectAll(status) {
-            document.querySelectorAll('.instance-cb').forEach(cb => cb.checked = status);
-            updateCounter();
-        }
-
-        // === 4. HÀM TẠO KEY 11 CHỮ SỐ VIẾT HOA (KHÔNG KÝ TỰ ĐẶC BIỆT) ===
-        function generateRandomKey() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        // 4. Hàm tạo Key 11 ký tự viết hoa không ký tự đặc biệt
+        function generateKey() {
             let result = '';
-            for (let i = 0; i < 11; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            const charactersLength = characters.length;
+            let counter = 0;
+            while (counter < 11) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                counter += 1;
             }
             return result;
         }
 
-        // === 5. LOGIC TẠO KEY ===
+        // 5. Hàm Tạo Key chính (Click nút)
         function generateKeys() {
-            const btn = document.getElementById('submitBtn');
-            const sl = parseInt(document.getElementById('slKey').value);
-            const days = document.getElementById('timeLimit').value;
-            const maxUid = parseInt(document.getElementById('maxUID').value);
-            
-            const selectedInstances = [];
-            document.querySelectorAll('.instance-cb:checked').forEach(cb => selectedInstances.push(cb.value));
-
-            if(selectedInstances.length === 0) {
-                alert("Vui lòng chọn ít nhất 1 Instance!");
-                return;
-            }
-
+            const btn = document.getElementById('createBtn');
             btn.disabled = true;
-            const modal = document.getElementById('loadingModal');
-            const loadingText = document.getElementById('loadingText');
-            const resultDisplay = document.getElementById('keyResultDisplay');
-            const closeBtn = document.getElementById('closeModalBtn');
             
-            modal.style.display = 'flex';
-            loadingText.innerText = "Đang tạo key...";
-            resultDisplay.style.display = 'none';
-            closeBtn.style.display = 'none';
+            // Hiện Loading
+            const loading = document.getElementById('loadingOverlay');
+            loading.classList.add('active');
 
-            // Chờ 1-10 giây
-            const waitTime = Math.floor(Math.random() * 9000) + 1000; 
+            // Mô phỏng thời gian chờ 1-10 giây
+            const waitTime = Math.floor(Math.random() * 9000) + 1000;
             
             setTimeout(() => {
-                let history = JSON.parse(localStorage.getItem('keyHistory')) || [];
-                let keysString = "";
-
-                for(let i = 0; i < sl; i++) {
-                    const newKey = generateRandomKey();
-                    const info = {
-                        key: newKey,
-                        maxUid: maxUid,
-                        days: days === '99999' ? 'Vĩnh viễn' : days + ' ngày',
-                        instances: selectedInstances.join(', '),
-                        createdAt: new Date().toLocaleString()
-                    };
-                    history.unshift(info); 
-                    keysString += newKey + (i < sl - 1 ? "\n" : "");
+                // Tạo danh sách Key
+                const sl = parseInt(document.getElementById('slKey').value) || 1;
+                let keys = [];
+                for(let i=0; i<sl; i++) {
+                    keys.push(generateKey());
                 }
 
-                localStorage.setItem('keyHistory', JSON.stringify(history));
-                renderHistory();
+                // Lưu vào lịch sử
+                const historyList = document.getElementById('historyList');
+                if(keys.length > 0) {
+                    historyList.innerHTML = ''; // Xóa dòng "Chưa có..."
+                    keys.forEach(k => {
+                        const item = document.createElement('div');
+                        item.className = 'history-item';
+                        item.innerHTML = `
+                            <span style="font-weight:bold; font-family: monospace;">${k}</span>
+                            <div>
+                                <span style="font-size:11px; color: #888;">${new Date().toLocaleString()}</span>
+                                <button class="btn-delete-history" onclick="this.parentElement.parentElement.remove()">Xóa</button>
+                            </div>
+                        `;
+                        historyList.prepend(item);
+                    });
+                }
 
-                // Hiển thị kết quả
-                loadingText.innerText = "Tạo thành công!";
-                resultDisplay.innerText = keysString;
-                resultDisplay.style.display = 'block';
-                closeBtn.style.display = 'block';
-
+                // Tắt Loading và Enable nút
+                loading.classList.remove('active');
+                btn.disabled = false;
+                alert("Tạo Key thành công! \n" + keys.join("\n"));
             }, waitTime);
         }
 
-        function closeModal() {
-            document.getElementById('loadingModal').style.display = 'none';
-            document.getElementById('submitBtn').disabled = false;
+        // 6. Hàm chuyển tab Quản trị
+        function switchTab(tabId) {
+            // Ẩn hết content
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            // Bỏ active cho all tab
+            document.querySelectorAll('.nav-tabs div').forEach(el => el.classList.remove('active'));
+
+            // Hiện cái đang chọn
+            document.getElementById(tabId).classList.add('active');
+            // Highlight tab
+            event.target.classList.add('active');
         }
-
-        // === 6. LỊCH SỬ KEY ===
-        function renderHistory() {
-            const container = document.getElementById('historyList');
-            const history = JSON.parse(localStorage.getItem('keyHistory')) || [];
-            
-            if(history.length === 0) {
-                container.innerHTML = '<div style="text-align:center; color:#888; padding:20px;">Chưa có key nào được tạo</div>';
-                return;
-            }
-
-            container.innerHTML = '';
-            history.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = 'history-item';
-                div.innerHTML = `
-                    <div>
-                        <strong style="font-family:monospace; text-transform:uppercase;">${item.key}</strong><br>
-                        <span style="font-size:11px; color:#666;">UID: ${item.maxUid} | Hạn: ${item.days} | Lúc: ${item.createdAt}</span>
-                    </div>
-                    <button class="delete-btn" onclick="deleteKey(${index})">Xoá</button>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function deleteKey(index) {
-            let history = JSON.parse(localStorage.getItem('keyHistory')) || [];
-            history.splice(index, 1);
-            localStorage.setItem('keyHistory', JSON.stringify(history));
-            renderHistory();
-        }
-
-        function clearHistory() {
-            if(confirm("Bạn có chắc chắn muốn xoá toàn bộ lịch sử đã tạo?")) {
-                localStorage.removeItem('keyHistory');
-                renderHistory();
-            }
-        }
-
-        // Khởi chạy render history khi mở trang
-        window.onload = function() {
-            renderHistory();
-        };
     </script>
 </body>
 </html>
