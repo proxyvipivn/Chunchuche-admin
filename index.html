@@ -7,7 +7,7 @@
     <style>
         :root {
             --primary-green: #1e8b4c; /* Màu xanh đậm */
-            --primary-green-hover: #156c3b; /* Màu xanh đậm hơn khi hover */
+            --primary-green-hover: #156c3b;
             --bg-light: #f2f2f2;
             --text-dark: #333;
             --border-color: #e0e0e0;
@@ -110,8 +110,14 @@
             display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer;
         }
         .menu-item span { color: #444; }
-        .menu-item .status-green { color: var(--primary-green); font-weight: bold; }
-        .menu-item .status-red { color: #ff4d4f; font-weight: bold; }
+        
+        /* Tạo khung trạng thái cho đẹp hơn */
+        .status-badge {
+            display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; color: white;
+        }
+        .status-green { background: var(--primary-green); }
+        .status-red { background: #ff4d4f; }
+
         .vpn-details { background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 14px; line-height: 1.6; }
         .vpn-details .label { font-weight: 600; color: #555; }
         .status-dot { 
@@ -214,7 +220,10 @@
 
             <div class="menu-item">
                 <span>VPN</span>
-                <span>Trung sang (<span class="status-green">đã cấp</span>), Công huynh (<span class="status-red">chưa cấp</span>)</span>
+                <span>
+                    Trung sang (<span class="status-badge status-green">đã cấp</span>), 
+                    Công huynh (<span class="status-badge status-green">đã cấp</span>)
+                </span>
             </div>
 
             <div class="menu-item">
@@ -331,7 +340,7 @@
                 loadingMsg.style.display = 'none';
                 btn.disabled = false;
 
-                // Lưu vào lịch sử (Không có chức năng xóa như yêu cầu)
+                // Lưu vào lịch sử
                 historyKeys.push(newKey);
                 const historyItem = document.createElement('div');
                 historyItem.className = 'history-item';
@@ -339,17 +348,14 @@
                     <span class="h-key">${newKey}</span>
                     <span class="h-del" onclick="deleteHistory(this, '${newKey}')">Xóa</span>
                 `;
-                // Cho vào đầu danh sách
                 historyList.prepend(historyItem);
 
             }, waitTime);
         }
 
-        // Xóa key khỏi lịch sử (UI + Data)
+        // Xóa key khỏi lịch sử
         function deleteHistory(element, key) {
-            // Xóa khỏi DOM
             element.parentElement.remove();
-            // Xóa khỏi mảng lưu trữ (nếu cần xóa thật backend)
             const index = historyKeys.indexOf(key);
             if (index > -1) {
                 historyKeys.splice(index, 1);
