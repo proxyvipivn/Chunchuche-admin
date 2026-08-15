@@ -3,198 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VITA MOD VIP - Tạo Key</title>
+    <title>VITA MOD VIP - Quản Lý Key</title>
     <style>
-        /* Cài đặt chung */
         :root {
-            --primary-green: #198754; /* Màu xanh đậm (đập) */
-            --primary-green-hover: #157347;
-            --bg-color: #f4f6f8;
-            --text-main: #333;
+            --primary-green: #1e8b4c; /* Màu xanh đậm */
+            --primary-green-hover: #156c3b; /* Màu xanh đậm hơn khi hover */
+            --bg-light: #f2f2f2;
+            --text-dark: #333;
+            --border-color: #e0e0e0;
         }
-        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { margin: 0; background-color: var(--bg-color); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
 
-        /* Container chính */
-        .app-container {
-            background: white;
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #e5e5e5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+
+        /* Modal Container */
+        .modal-container {
+            background: #fff;
             width: 100%;
             max-width: 500px;
-            border-radius: 20px;
+            border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             overflow: hidden;
             position: relative;
+            display: none;
         }
 
-        /* Header (Ảnh 1) */
-        .header {
-            padding: 30px 20px;
+        /* Phần 1: Đăng nhập (Ảnh 1) */
+        #login-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
             text-align: center;
-            border-bottom: 1px solid #eee;
-            background: #fff;
         }
-        .shield-icon {
-            width: 60px;
-            height: 60px;
-            border: 4px solid #ff6b35; /* Màu cam */
-            border-radius: 12px;
-            margin: 0 auto 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ff6b35;
-            font-size: 30px;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
+        #login-section .shield-icon { width: 60px; height: 60px; stroke: #d35400; stroke-width: 3; fill: none; margin-bottom: 15px; }
+        #login-section h1 { font-size: 28px; color: #222; letter-spacing: 1px; font-weight: 700; margin-bottom: 5px; }
+        #login-section .sub-title { color: #777; font-size: 14px; margin-bottom: 25px; }
+        .login-group { width: 100%; text-align: left; margin-bottom: 15px; }
+        .login-group label { display: block; font-size: 13px; color: #666; font-weight: 600; margin-bottom: 5px; }
+        .login-group input { 
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; background: #f9f9f9; outline: none; 
         }
-        .header h1 { margin: 0; font-size: 24px; letter-spacing: 1px; font-weight: 700; }
-        .header p { margin: 5px 0 0; color: #888; font-size: 15px; }
-        .title-auth { font-size: 28px; font-weight: 800; margin-top: 10px; }
+        .login-group input:focus { border-color: var(--primary-green); }
+        .login-btn { 
+            background: var(--primary-green); color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; 
+            font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; margin-top: 5px;
+        }
+        .login-btn:hover { background: var(--primary-green-hover); }
+        .login-error { color: red; font-size: 13px; margin-top: 10px; display: none; }
 
-        /* Form (Ảnh 2) */
-        .form-content {
-            padding: 25px;
-            display: none; /* Ẩn form ban đầu */
+        /* Phần 2: Dashboard chính (Ảnh 2 + Yêu cầu bổ sung) */
+        #dashboard-section { display: none; padding: 20px; position: relative; }
+        .dashboard-header {
+            display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px;
         }
-        .form-content.active { display: block; }
-
-        /* Inputs */
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: var(--text-main); }
-        .input-group input, .input-group select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 15px;
-            outline: none;
-            transition: 0.2s;
+        .dashboard-header h2 { font-size: 18px; color: #333; }
+        .close-btn { 
+            background: #eee; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 18px; cursor: pointer; color: #666;
         }
-        .input-group input:focus, .input-group select:focus { border-color: var(--primary-green); }
         
-        /* Checkboxes List */
-        .instance-list {
-            border: 1px solid #eee;
-            border-radius: 8px;
-            padding: 10px;
-            max-height: 300px;
-            overflow-y: auto;
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; }
+        .form-group input, .form-group select { 
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; background: #fff;
         }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary-green); }
+        .max-uid-desc { font-size: 11px; color: #888; margin-top: 4px; }
+
+        .instances-section { margin-top: 10px; border-top: 1px solid #eee; padding-top: 15px; }
         .instance-item {
-            display: flex;
-            align-items: center;
-            padding: 8px 10px;
-            border-bottom: 1px solid #f9f9f9;
+            display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f5f5f5;
         }
-        .instance-item:last-child { border-bottom: none; }
-        .instance-item label { margin-left: 10px; flex: 1; font-weight: normal; cursor: pointer; }
+        .instance-item label {
+            display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: #333; flex: 1;
+        }
         .instance-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: var(--primary-green); /* Màu xanh đập */
-            cursor: pointer;
+            accent-color: var(--primary-green); width: 18px; height: 18px; cursor: pointer;
         }
-        .instance-item span.port {
-            color: #999;
-            font-size: 12px;
-            background: #f1f1f1;
-            padding: 2px 8px;
-            border-radius: 4px;
+        .instance-item .details {
+            display: flex; gap: 15px; font-size: 13px; color: #777;
+        }
+        .instance-item .vps-tag {
+            color: #555; font-weight: 500; min-width: 40px; text-align: right;
         }
 
-        /* Button */
-        .btn-create {
-            width: 100%;
-            background: var(--primary-green);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-top: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
+        .submit-area { margin-top: 20px; text-align: center; }
+        .create-btn { 
+            background: var(--primary-green); color: white; border: none; padding: 12px 30px; border-radius: 6px; 
+            font-size: 15px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
         }
-        .btn-create:hover { background: var(--primary-green-hover); }
-        .btn-create:disabled { opacity: 0.6; cursor: not-allowed; }
+        .create-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        #loading-msg { display: none; margin-top: 10px; font-size: 14px; color: #555; }
+        #result-key { display: none; margin-top: 15px; padding: 10px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 6px; font-weight: bold; word-break: break-all; color: #166534; }
 
-        /* Popup & Loading */
-        #loadingOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 999; }
-        #loadingOverlay.active { display: flex; }
-        .loader-box { background: white; padding: 30px 40px; border-radius: 15px; text-align: center; }
-        .spinner { width: 40px; height: 40px; border: 5px solid #eee; border-top: 5px solid var(--primary-green); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .history-area { margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; }
+        .history-area h4 { font-size: 14px; color: #666; margin-bottom: 10px; }
+        .history-list { max-height: 150px; overflow-y: auto; border: 1px solid #eee; border-radius: 6px; padding: 10px; }
+        .history-item { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed #eee; font-size: 13px; }
+        .history-item .h-key { font-weight: 600; color: var(--primary-green); }
+        .history-item .h-del { color: #ff4d4f; cursor: pointer; font-weight: bold; }
 
-        /* Màn hình xác thực MK */
-        .auth-screen { padding: 25px; display: block; }
-        .auth-screen.hidden { display: none; }
+        /* Phần 3: Menu & VPN (Sau khi ấn dấu X) */
+        #menu-section { display: none; padding: 20px; }
+        .menu-header { font-size: 18px; font-weight: bold; margin-bottom: 20px; color: #333; }
+        .menu-item { 
+            display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer;
+        }
+        .menu-item span { color: #444; }
+        .menu-item .status-green { color: var(--primary-green); font-weight: bold; }
+        .menu-item .status-red { color: #ff4d4f; font-weight: bold; }
+        .vpn-details { background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 14px; line-height: 1.6; }
+        .vpn-details .label { font-weight: 600; color: #555; }
+        .status-dot { 
+            display: inline-block; width: 12px; height: 12px; background: var(--primary-green); border-radius: 50%; margin-right: 5px; 
+            animation: pulse-green 2s infinite; 
+        }
+        @keyframes pulse-green { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        /* Phần 2: Admin & Quản trị (Ẩn/Hiện) */
-        .section-admin { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; display: none; }
-        .section-admin.active { display: block; }
-        .nav-tabs { display: flex; border-bottom: 2px solid #eee; margin-bottom: 15px; }
-        .nav-tabs div { flex: 1; text-align: center; padding: 10px; cursor: pointer; font-weight: bold; color: #888; border-bottom: 3px solid transparent; }
-        .nav-tabs div.active { color: var(--primary-green); border-bottom: 3px solid var(--primary-green); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        
-        /* Wifi màu xanh lá đập */
-        .vpn-status.wifi-green { color: var(--primary-green); font-size: 24px; vertical-align: middle; margin-right: 10px; }
-
-        /* Lịch sử key */
-        .history-box { margin-top: 20px; background: #f8f9fa; border-radius: 8px; padding: 10px; max-height: 150px; overflow-y: auto; font-size: 13px; }
-        .history-item { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed #ddd; }
-        .history-item:last-child { border-bottom: none; }
-        .btn-delete-history { color: #dc3545; cursor: pointer; font-size: 12px; border: none; background: none;}
+        /* Responsive */
+        @media (max-width: 480px) { .instance-item { flex-direction: column; align-items: flex-start; gap: 5px; } .instance-item .details { width: 100%; justify-content: space-between; } }
     </style>
 </head>
 <body>
 
-    <!-- Loading Màn hình chờ -->
-    <div id="loadingOverlay">
-        <div class="loader-box">
-            <div class="spinner"></div>
-            <p>Đang tạo Key...</p>
-            <p style="font-size: 12px; color: #888;">Vui lòng chờ từ 1-10 giây</p>
-        </div>
-    </div>
+    <div class="modal-container" id="app-container">
 
-    <div class="app-container">
-        <!-- Phần Header (Ảnh 1) -->
-        <div class="header">
-            <div class="shield-icon">🛡️</div>
+        <!-- Phần 1: Đăng nhập -->
+        <div id="login-section">
+            <svg class="shield-icon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
             <h1>VITA MOD VIP</h1>
-            <p>Kích hoạt Key & Quản lý UID</p>
-        </div>
-
-        <!-- Màn hình Nhập MK (Ảnh 1 nửa dưới yêu cầu) -->
-        <div class="auth-screen" id="authScreen">
-            <h3 style="text-align: center; margin-top: 0;">CHUN–CHU–CHE—ADMIN</h3>
-            <div class="input-group">
-                <label>Nhập Mật Khẩu</label>
-                <input type="password" id="passwordInput" placeholder="**********" style="text-align: center; font-size: 20px; letter-spacing: 3px;">
-            </div>
-            <button class="btn-create" onclick="checkPassword()">Xác Nhận</button>
-            <p style="text-align: center; color: red; font-size: 13px; margin-top: 10px; display: none;" id="errorPass">Sai mật khẩu!</p>
-        </div>
-
-        <!-- Form chính (Ảnh 2) -->
-        <div class="form-content" id="mainForm">
-            <h3 style="margin-top: 0;">Tạo Key Mới</h3>
+            <div class="sub-title">Kích hoạt Key & Quản lý UID</div>
             
-            <div class="input-group">
-                <label>SỐ LƯỢNG KEY</label>
-                <input type="number" id="slKey" value="10" min="1">
+            <div class="login-group">
+                <label>CHUN-CHU-CHE-ADMIN</label>
+                <input type="password" id="uid-ip-input" placeholder="Nhập MK">
+            </div>
+            <button class="login-btn" onclick="handleLogin()">Đăng nhập</button>
+            <div class="login-error" id="login-error-msg">Sai mật khẩu!</div>
+        </div>
+
+        <!-- Phần 2: Dashboard Tạo Key -->
+        <div id="dashboard-section">
+            <div class="dashboard-header">
+                <h2>Tạo Key Mới</h2>
+                <button class="close-btn" onclick="toggleMenu()">×</button>
             </div>
 
-            <div class="input-group">
+            <div class="form-group">
+                <label>SỐ LƯỢNG KEY</label>
+                <input type="number" id="sl-key" value="10" min="1">
+            </div>
+
+            <div class="form-group">
                 <label>THỜI HẠN (NGÀY)</label>
-                <select id="timeLimit">
+                <select id="thoi-han">
                     <option value="1">1 ngày</option>
                     <option value="2">2 ngày</option>
                     <option value="3">3 ngày</option>
@@ -203,188 +167,200 @@
                     <option value="6">6 ngày</option>
                     <option value="7">7 ngày</option>
                     <option value="30" selected>30 ngày</option>
-                    <option value="99999">Vĩnh viễn</option>
-                    <option value="custom">Tùy chọn (Nhập số ngày)</option>
+                    <option value="999999">Vĩnh viễn</option>
                 </select>
-                <input type="number" id="customDays" placeholder="Nhập số ngày..." style="margin-top: 10px; display:none;">
+                <div class="max-uid-desc">thích tạo key thời hạn bao nhiêu cũng được</div>
             </div>
 
-            <div class="input-group">
+            <div class="form-group">
                 <label>MAX UID/IP MỖI KEY</label>
-                <input type="number" id="maxUID" value="1" min="1" max="10000">
+                <input type="number" id="max-uid" value="1" min="1" max="10000">
+                <div class="max-uid-desc">Mặc định 1 - mỗi key chỉ kích hoạt cho 1 UID. Có thể cho từ 1-10000</div>
             </div>
 
-            <div class="input-group">
-                <label>CHỌN INSTANCES CHO KEY *</label>
-                <div class="instance-list" id="instanceList">
-                    <!-- Các instance sẽ được JS tạo ra -->
+            <div class="form-group instances-section">
+                <label style="margin-bottom: 10px;">CHỌN INSTANCES CHO KEY *</label>
+                <div id="instances-list">
+                    <!-- Danh sách checkboxes được tạo tự động bởi JS -->
                 </div>
+                <div class="max-uid-desc" style="margin-top: 10px;">Chọn instances VPN mà key được phép sử dụng</div>
             </div>
 
-            <button class="btn-create" id="createBtn" onclick="generateKeys()">
-                <span>✔</span> Tạo Key
-            </button>
-
-            <!-- Phần lịch sử -->
-            <div class="history-box">
-                <strong>Lịch sử Key đã tạo:</strong> 
-                <div id="historyList">
-                    <p style="color: #999; font-size: 12px;">Chưa có key nào được tạo.</p>
-                </div>
+            <div class="submit-area">
+                <button class="create-btn" onclick="generateKeys()">✔ Tạo Key</button>
+                <div id="loading-msg">⏳ Đang tạo, vui lòng chờ 1-10 giây...</div>
+                <div id="result-key">Key của bạn: <span id="key-display"></span></div>
             </div>
 
-            <!-- Phần 2: Quản trị (Thêm vào dưới cùng) -->
-            <div class="section-admin" id="adminSection">
-                <div class="nav-tabs">
-                    <div class="active" onclick="switchTab('tab1')">Admin</div>
-                    <div onclick="switchTab('tab2')">Trung Sang</div>
-                    <div onclick="switchTab('tab3')">Công Huynh</div>
+            <div class="history-area">
+                <h4>Lịch sử key đã tạo</h4>
+                <div class="history-list" id="history-list">
+                    <!-- Lịch sử hiển thị tại đây -->
                 </div>
+            </div>
+        </div>
 
-                <div id="tab1" class="tab-content active">
-                    <p>Chào mừng Admin.</p>
-                    <div class="vpn-status wifi-green">📶</div>
-                    <strong>VPN máy chủ</strong><br>
-                    <span style="color: #555;">1702.18.1.3.186</span><br>
-                    VPN chính MK: **********
+        <!-- Phần 3: Menu VPN sau khi ấn dấu X -->
+        <div id="menu-section">
+            <div class="dashboard-header" style="border:none; padding:0; margin-bottom: 10px;">
+                <div class="menu-header">CHUNCHUCHE</div>
+                <button class="close-btn" onclick="toggleMenu()">×</button>
+            </div>
+
+            <div class="menu-item">
+                <span>Admin</span>
+                <span>Trung sang, Công huynh</span>
+            </div>
+
+            <div class="menu-item">
+                <span>VPN</span>
+                <span>Trung sang (<span class="status-green">đã cấp</span>), Công huynh (<span class="status-red">chưa cấp</span>)</span>
+            </div>
+
+            <div class="menu-item">
+                <span>Bảo mật</span>
+                <span>Vpn đã cấp bảo mật an toàn</span>
+            </div>
+
+            <div class="vpn-details">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <span class="status-dot"></span>
+                    <span style="font-weight: bold;">VPN máy chủ📦</span>
                 </div>
-                <div id="tab2" class="tab-content">
-                    <p>Trung Sang (Đã cấp VPN)</p>
-                </div>
-                <div id="tab3" class="tab-content">
-                    <p>Công Huynh (Chưa cấp VPN)</p>
-                </div>
+                <div><span class="label">IP:</span> 1702.18.1.3.186</div>
+                <div><span class="label">VPN chính:</span> MK: ***********</div>
             </div>
         </div>
     </div>
 
     <script>
-        // 1. Tạo các checkbox yêu cầu
-        const instances = [
-            { name: "AimDrag", port: ":1700" },
-            { name: "AimBodyAntena", port: ":1701" },
-            { name: "Aim Body", port: ":1703" },
-            { name: "Aim neck", port: ":1704" },
-            { name: "Aim neck+antena", port: ":1706" },
-            { name: "holo no aim", port: ":1705" },
-            { name: "AIM DRAG", port: "" },
-            { name: "AIM BODY", port: "" },
-            { name: "AIM NECK", port: "" },
-            { name: "AIM DRAG V2", port: "" },
-            { name: "AIM MAGIC", port: "" },
-            { name: "AIM NECK + MOD", port: "" },
-            { name: "AIM BODY + MOD", port: "" },
-            { name: "XUYÊN GIÁP", port: "" },
-            { name: "AIM BODY + ANTENA", port: "" },
-            { name: "AIM NECK + ANTENA", port: "" },
-            { name: "MOD + ƯỚC ĐƯỢC BAN", port: "" }
+        // Cấu hình danh sách Instances theo yêu cầu
+        const instancesData = [
+            { name: "AimDrag", port: ":1700", vps: "VPS 1" },
+            { name: "AimBodyAntena", port: ":1701", vps: "VPS 1" },
+            { name: "Aim Body", port: ":1703", vps: "VPS 1" },
+            { name: "Aim neck", port: ":1704", vps: "VPS 1" },
+            { name: "Aim neck+antena", port: ":1706", vps: "VPS 1" },
+            { name: "holo no aim", port: ":1705", vps: "VPS 1" },
+            { name: "AIM DRAG V2", port: ":1707", vps: "VPS 1" },
+            { name: "AIM MAGIC", port: ":1708", vps: "VPS 1" },
+            { name: "AIM NECK + MOD", port: ":1712", vps: "VPS 1" },
+            { name: "AIM BODY + MOD", port: ":1709", vps: "VPS 1" },
+            { name: "XUYÊN GIÁP", port: ":1700", vps: "VPS 1" },
+            { name: "MOD + ƯỚC ĐƯỢC BAN", port: ":1711", vps: "VPS 1" },
         ];
 
-        const listContainer = document.getElementById('instanceList');
-        instances.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'instance-item';
-            div.innerHTML = `
-                <input type="checkbox" checked>
-                <label>${item.name}</label>
-                <span class="port">${item.port}</span>
-            `;
-            listContainer.appendChild(div);
-        });
+        const ADMIN_PASS = "UIDIPXCHEAT1743";
+        let historyKeys = [];
 
-        // 2. Logic xác thực mật khẩu
-        function checkPassword() {
-            const pass = document.getElementById('passwordInput').value;
-            if(pass === "UIDIPXCHEAT1743") {
-                document.getElementById('authScreen').classList.add('hidden');
-                document.getElementById('mainForm').classList.add('active');
-                document.getElementById('adminSection').classList.add('active');
-                document.getElementById('errorPass').style.display = 'none';
+        // Khởi tạo giao diện Instances
+        function loadInstances() {
+            const container = document.getElementById('instances-list');
+            container.innerHTML = instancesData.map((inst, index) => `
+                <div class="instance-item">
+                    <label>
+                        <input type="checkbox" checked> ${inst.name}
+                    </label>
+                    <div class="details">
+                        <span>${inst.port}</span>
+                        <span class="vps-tag">${inst.vps}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Xử lý đăng nhập
+        function handleLogin() {
+            const pass = document.getElementById('uid-ip-input').value;
+            if(pass === ADMIN_PASS) {
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('dashboard-section').style.display = 'block';
+                document.getElementById('app-container').style.display = 'block';
+                document.getElementById('login-error-msg').style.display = 'none';
             } else {
-                document.getElementById('errorPass').style.display = 'block';
+                document.getElementById('login-error-msg').style.display = 'block';
             }
         }
 
-        // 3. Hiện/ẩn ô nhập ngày tùy chọn
-        document.getElementById('timeLimit').addEventListener('change', function() {
-            const customInput = document.getElementById('customDays');
-            if(this.value === 'custom') {
-                customInput.style.display = 'block';
+        // Xử lý chuyển đổi qua lại giữa Phần 2 và Phần 3
+        function toggleMenu() {
+            const dash = document.getElementById('dashboard-section');
+            const menu = document.getElementById('menu-section');
+            if (dash.style.display === 'none') {
+                dash.style.display = 'block';
+                menu.style.display = 'none';
             } else {
-                customInput.style.display = 'none';
+                dash.style.display = 'none';
+                menu.style.display = 'block';
             }
-        });
+        }
 
-        // 4. Hàm tạo Key 11 ký tự viết hoa không ký tự đặc biệt
-        function generateKey() {
+        // Hàm tạo Key ngẫu nhiên 11 chữ số viết hoa, không ký tự đặc biệt
+        function generateRandomKey() {
             let result = '';
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            const charactersLength = characters.length;
-            let counter = 0;
-            while (counter < 11) {
-                result += characters.charAt(Math.floor(Math.random() * charactersLength));
-                counter += 1;
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            const charsLength = chars.length;
+            for (let i = 0; i < 11; i++) {
+                result += chars.charAt(Math.floor(Math.random() * charsLength));
             }
             return result;
         }
 
-        // 5. Hàm Tạo Key chính (Click nút)
+        // Xử lý Tạo Key
         function generateKeys() {
-            const btn = document.getElementById('createBtn');
+            const btn = document.querySelector('.create-btn');
+            const loadingMsg = document.getElementById('loading-msg');
+            const resultKeyDiv = document.getElementById('result-key');
+            const keyDisplay = document.getElementById('key-display');
+            const historyList = document.getElementById('history-list');
+
+            // Vô hiệu hóa nút
             btn.disabled = true;
-            
-            // Hiện Loading
-            const loading = document.getElementById('loadingOverlay');
-            loading.classList.add('active');
+            loadingMsg.style.display = 'block';
+            resultKeyDiv.style.display = 'none';
 
-            // Mô phỏng thời gian chờ 1-10 giây
-            const waitTime = Math.floor(Math.random() * 9000) + 1000;
-            
+            // Giả lập thời gian chờ 1-10 giây
+            const waitTime = Math.floor(Math.random() * 9000) + 1000; 
+
             setTimeout(() => {
-                // Tạo danh sách Key
-                const sl = parseInt(document.getElementById('slKey').value) || 1;
-                let keys = [];
-                for(let i=0; i<sl; i++) {
-                    keys.push(generateKey());
-                }
-
-                // Lưu vào lịch sử
-                const historyList = document.getElementById('historyList');
-                if(keys.length > 0) {
-                    historyList.innerHTML = ''; // Xóa dòng "Chưa có..."
-                    keys.forEach(k => {
-                        const item = document.createElement('div');
-                        item.className = 'history-item';
-                        item.innerHTML = `
-                            <span style="font-weight:bold; font-family: monospace;">${k}</span>
-                            <div>
-                                <span style="font-size:11px; color: #888;">${new Date().toLocaleString()}</span>
-                                <button class="btn-delete-history" onclick="this.parentElement.parentElement.remove()">Xóa</button>
-                            </div>
-                        `;
-                        historyList.prepend(item);
-                    });
-                }
-
-                // Tắt Loading và Enable nút
-                loading.classList.remove('active');
+                const newKey = generateRandomKey();
+                
+                // Hiển thị key
+                keyDisplay.innerText = newKey;
+                resultKeyDiv.style.display = 'block';
+                loadingMsg.style.display = 'none';
                 btn.disabled = false;
-                alert("Tạo Key thành công! \n" + keys.join("\n"));
+
+                // Lưu vào lịch sử (Không có chức năng xóa như yêu cầu)
+                historyKeys.push(newKey);
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <span class="h-key">${newKey}</span>
+                    <span class="h-del" onclick="deleteHistory(this, '${newKey}')">Xóa</span>
+                `;
+                // Cho vào đầu danh sách
+                historyList.prepend(historyItem);
+
             }, waitTime);
         }
 
-        // 6. Hàm chuyển tab Quản trị
-        function switchTab(tabId) {
-            // Ẩn hết content
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            // Bỏ active cho all tab
-            document.querySelectorAll('.nav-tabs div').forEach(el => el.classList.remove('active'));
-
-            // Hiện cái đang chọn
-            document.getElementById(tabId).classList.add('active');
-            // Highlight tab
-            event.target.classList.add('active');
+        // Xóa key khỏi lịch sử (UI + Data)
+        function deleteHistory(element, key) {
+            // Xóa khỏi DOM
+            element.parentElement.remove();
+            // Xóa khỏi mảng lưu trữ (nếu cần xóa thật backend)
+            const index = historyKeys.indexOf(key);
+            if (index > -1) {
+                historyKeys.splice(index, 1);
+            }
         }
+
+        // Chạy khi tải trang
+        window.onload = function() {
+            loadInstances();
+            document.getElementById('app-container').style.display = 'block';
+        };
     </script>
 </body>
 </html>
